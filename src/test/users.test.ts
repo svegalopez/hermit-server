@@ -15,6 +15,14 @@ describe("Users", () => {
         hermit.httpServer.close();
     })
 
+    describe("REST", () => {
+        it("should return all users", async () => {
+            const { body } = await request(hermit.app).get("/api/users");
+            const mapper = (user: User) => ({ email: user.email });
+            expect(body.map(mapper)).toEqual(data);
+        });
+    })
+
     describe("GQL", () => {
         it('should return all users', async () => {
             const { body } = await request(hermit.app).post("/graphql").send({
@@ -24,7 +32,6 @@ describe("Users", () => {
         });
 
         it("should create a user", async () => {
-
             let query = `mutation CreateUser($user: UserInput!) {
                 createUser(user: $user) {
                     email,
@@ -42,18 +49,7 @@ describe("Users", () => {
                         }
                     },
                 });
-
-
-            console.log(body)
             expect(typeof body.data.createUser.id).toEqual("number");
         });
-    })
-
-    // describe("REST", () => {
-    //     it("should return all users", async () => {
-    //         const { body } = await request(hermit.app).get("/api/users");
-    //         const mapper = (user: User) => ({ email: user.email });
-    //         expect(body.map(mapper)).toEqual(data);
-    //     });
-    // })
+    });
 });

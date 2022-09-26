@@ -4,30 +4,33 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "copy-files": "cp ./src/prisma/.env ./dist/prisma/.env",
     "compile": "tsc && node dist/index.js",
     "dev": "nodemon -e ts --exec \"npm run compile\"",
-    "test": "jest",
-    "seed": "tsc && prisma db seed",
+    "test": "jest --verbose",
+    "seed": "tsc && prisma db seed --schema ./src/prisma/schema.prisma",
     "migrate:dev": "prisma migrate dev --schema ./src/prisma/schema.prisma",
     "studio": "prisma studio --schema ./src/prisma/schema.prisma"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
-    "@types/jest": "^26.0.24",
     "@types/supertest": "^2.0.12",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.6",
     "typescript": "^4.3.5"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",
+    "@types/dotenv": "^8.2.0",
+    "@types/jest": "^29.0.3",
     "@types/node": "^18.7.22",
     "apollo-server-core": "^3.10.2",
     "apollo-server-express": "^3.10.2",
+    "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "graphql": "^16.6.0",
+    "jest": "^29.0.3",
     "prisma": "^4.3.1",
-    "supertest": "^6.2.4"
+    "supertest": "^6.2.4",
+    "ts-jest": "^29.0.2"
   },
   "prisma": {
     "seed": "node dist/prisma/seed/index.js"

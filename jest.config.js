@@ -3,5 +3,8 @@ module.exports = {
   testEnvironment: 'node',
   collectCoverage: true,
   coverageDirectory: 'test/coverage',
-  rootDir: 'src'
+  rootDir: 'src',
+  setupFiles: [
+    "./test/setup/createDb.ts"
+  ]
 };
