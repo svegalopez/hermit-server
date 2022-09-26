@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import Hermit, { IHermit } from '../hermit';
 import destroyDd from './teardown/destroyDd';
+import request from 'supertest';
 
 describe("Todos", () => {
 
@@ -15,7 +16,8 @@ describe("Todos", () => {
         execSync(`rm -rf ./temp-${process.pid}`)
     })
 
-    it('should pass', () => {
-
+    it("should login", async () => {
+        const { status } = await request(hermit.app).post("/api/users/login");
+        expect(status).toEqual(200);
     });
 });

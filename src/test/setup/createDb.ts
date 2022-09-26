@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { execSync } from "child_process";
 import { writeFileSync } from "fs";
 

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const mysql = require("mysql");
 
 export default function () {

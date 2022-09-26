@@ -1,5 +1,5 @@
 import request from 'supertest';
-import data from '../prisma/seed/data';
+import data from '../prisma/seed/data'; // get rid of this seeds are not for tests
 import { User } from '@prisma/client';
 import Hermit, { IHermit } from '../hermit';
 import destroyDd from './teardown/destroyDd';
@@ -25,6 +25,11 @@ describe("Users", () => {
             const mapper = (user: User) => ({ email: user.email });
             expect(body.map(mapper)).toEqual(data);
         });
+
+        // it("should login", async () => {
+        //     const { status } = await request(hermit.app).post("/api/users/login");
+        //     expect(status).toEqual(200);
+        // });
     })
 
     describe("GQL", () => {
