@@ -1,0 +1,31 @@
+{
+  "name": "typescript-jest-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc && node dist/index.js",
+    "dev": "nodemon -e ts --exec \"npm run compile\"",
+    "test": "jest",
+    "seed": "tsc && prisma db seed",
+    "migrate:dev": "prisma migrate dev --schema ./src/prisma/schema.prisma",
+    "studio": "prisma studio --schema ./src/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/jest": "^26.0.24",
+    "@types/supertest": "^2.0.12",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.3.1",
+    "express": "^4.18.1",
+    "prisma": "^4.3.1",
+    "supertest": "^6.2.4"
+  },
+  "prisma": {
+    "seed": "node dist/prisma/seed/index.js"
+  }
+}
