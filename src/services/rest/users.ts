@@ -6,4 +6,10 @@ router.get('/', async (req, res) => {
     res.json(users);
 })
 
+router.post('/login', async (req, res) => {
+    // obtain user from db
+    // check passwords
+    // sign a token and send to user
+})
+
 export default router;

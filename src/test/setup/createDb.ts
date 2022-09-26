@@ -14,7 +14,6 @@ module.exports = async function () {
 
     // Set env variable
     process.env.DATABASE_URL = `mysql://root:rootroot@localhost:3306/${"test_" + process.pid}`
-    console.log(process.pid, process.env.DATABASE_URL);
 
     // Create the db and apply migrations
     execSync(`npx prisma migrate deploy --schema ./temp-${process.pid}/prisma/schema.prisma`).toString();
