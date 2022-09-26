@@ -7,10 +7,10 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: (req: Express.Request, res: Express.Response) => {
-        req.prisma = prisma;
         return {
             req,
-            res
+            res,
+            prisma
         }
     }
 });

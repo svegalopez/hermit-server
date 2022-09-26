@@ -15,20 +15,45 @@ describe("Users", () => {
         hermit.httpServer.close();
     })
 
-    it('should pass', () => {
+    describe("GQL", () => {
+        it('should return all users', async () => {
+            const { body } = await request(hermit.app).post("/graphql").send({
+                query: 'query{users{email}}'
+            })
+            expect(body.data.users).toEqual(data);
+        });
 
-    });
+        it("should create a user", async () => {
 
-    it("should return all users from rest api", async () => {
-        const res = await request(hermit.app).get("/api/users");
-        const mapper = (user: User) => ({ email: user.email });
-        expect(res.body.map(mapper)).toEqual(data);
-    });
+            let query = `mutation CreateUser($user: UserInput!) {
+                createUser(user: $user) {
+                    email,
+                    id
+                }
+            }`;
 
-    it('should return all users from gql api', async () => {
-        const { body } = await request(hermit.app).post("/graphql").send({
-            query: 'query{users{email}}'
-        })
-        expect(body.data.users).toEqual(data);
-    });
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .send({
+                    query,
+                    variables: {
+                        user: {
+                            email: Date.now() + '@test.com'
+                        }
+                    },
+                });
+
+
+            console.log(body)
+            expect(typeof body.data.createUser.id).toEqual("number");
+        });
+    })
+
+    // describe("REST", () => {
+    //     it("should return all users", async () => {
+    //         const { body } = await request(hermit.app).get("/api/users");
+    //         const mapper = (user: User) => ({ email: user.email });
+    //         expect(body.map(mapper)).toEqual(data);
+    //     });
+    // })
 });
