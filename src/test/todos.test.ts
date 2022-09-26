@@ -1,4 +1,6 @@
+import { execSync } from 'child_process';
 import Hermit, { IHermit } from '../hermit';
+import destroyDd from './teardown/destroyDd';
 
 describe("Todos", () => {
 
@@ -7,8 +9,10 @@ describe("Todos", () => {
         hermit = await Hermit();
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         hermit.httpServer.close();
+        await destroyDd();
+        execSync(`rm -rf ./temp-${process.pid}`)
     })
 
     it('should pass', () => {

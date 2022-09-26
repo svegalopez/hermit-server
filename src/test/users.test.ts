@@ -2,6 +2,8 @@ import request from 'supertest';
 import data from '../prisma/seed/data';
 import { User } from '@prisma/client';
 import Hermit, { IHermit } from '../hermit';
+import destroyDd from './teardown/destroyDd';
+import { execSync } from 'child_process';
 
 
 describe("Users", () => {
@@ -11,8 +13,10 @@ describe("Users", () => {
         hermit = await Hermit();
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         hermit.httpServer.close();
+        await destroyDd();
+        execSync(`rm -rf ./temp-${process.pid}`)
     })
 
     describe("REST", () => {
