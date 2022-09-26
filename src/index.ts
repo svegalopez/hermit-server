@@ -1,3 +1,9 @@
-import app from './app';
+import { app, init } from './app';
 
-app.listen(4000, () => console.log('listening on 4000...'));
+async function main() {
+    await init();
+    await new Promise<void>(resolve => app.listen({ port: 4000 }, resolve));
+    console.log('🦀 Hermit ready at "http://localhost:4000" 🐚');
+}
+
+main();

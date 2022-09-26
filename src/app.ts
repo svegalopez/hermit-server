@@ -1,9 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import express from 'express';
+import server from './services/apollo/apollo';
 import users from './services/users';
+import { PrismaClient } from '@prisma/client';
 
-const app = express();
 const prisma = new PrismaClient();
+const app = express();
 
 app.use(express.json());
 
@@ -14,4 +15,13 @@ app.use((req, _res, next) => {
 
 app.use('/users', users);
 
-export default app;
+
+export {
+    app,
+    init
+};
+
+async function init() {
+    await server.start();
+    server.applyMiddleware({ app });
+}
