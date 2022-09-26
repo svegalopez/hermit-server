@@ -1,27 +1,17 @@
 import express from 'express';
 import server from './services/apollo/apollo';
-import users from './services/users';
-import { PrismaClient } from '@prisma/client';
+import api from './services';
 
-const prisma = new PrismaClient();
 const app = express();
+app.use('/api', api);
 
-app.use(express.json());
-
-app.use((req, _res, next) => {
-    req.prisma = prisma;
-    next();
-});
-
-app.use('/users', users);
-
+async function init() {
+    await server.start();
+    server.applyMiddleware({ app });
+}
 
 export {
     app,
     init
 };
 
-async function init() {
-    await server.start();
-    server.applyMiddleware({ app });
-}
