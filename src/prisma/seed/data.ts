@@ -1,4 +1,12 @@
+import { hashSync } from "bcrypt";
+
 export default [
-    { email: 'svegalopez@gmail.com' },
-    { email: 'sebastianvega.dev@gmail.com' }
+    {
+        email: 'svegalopez@gmail.com',
+        password: hashSync('Rootroot1!', 10)
+    },
+    {
+        email: 'sebastianvega.dev@gmail.com',
+        password: hashSync('Rootroot1!', 10)
+    }
 ];
