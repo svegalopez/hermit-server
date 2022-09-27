@@ -1,6 +1,6 @@
 import express from 'express';
 import prisma from './prisma';
-import users from './rest/users';
+import users, { authenticate } from './rest/users';
 const router = express.Router();
 
 router.use(express.json());
@@ -11,5 +11,6 @@ router.use((req, _res, next) => {
 });
 
 router.use('/users', users);
+// router.use('/order', authenticate, orders);
 
 export default router;

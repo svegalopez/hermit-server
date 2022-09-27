@@ -43,6 +43,37 @@ describe("Users", () => {
         });
     })
 
+    describe("POST /users/login", () => {
+
+        it("should login a user", async () => {
+            const { body } = await request(hermit.app)
+                .post("/api/users/login")
+                .send({
+                    email: "svegalopez@gmail.com",
+                    password: 'Rootroot1!'
+                });
+            expect(typeof body.token).toEqual("string");
+        });
+    })
+
+    describe("GET /users/current", () => {
+
+        it("should get the current user", async () => {
+            const { body } = await request(hermit.app)
+                .post("/api/users/login")
+                .send({
+                    email: "svegalopez@gmail.com",
+                    password: 'Rootroot1!'
+                });
+
+            const res = await request(hermit.app)
+                .get("/api/users/current")
+                .set({ Authorization: body.token });
+            expect(res.body.email).toEqual("svegalopez@gmail.com");
+            expect(res.body.id).toEqual(1);
+        });
+    })
+
     // describe("GQL", () => {
     //     // it('should return all users', async () => {
     //     //     const { body } = await request(hermit.app).post("/graphql").send({

@@ -1,20 +1,35 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 const router = express.Router();
-import { hashSync } from 'bcrypt';
+import { compareSync, hashSync } from 'bcrypt';
+const jwt = require('jsonwebtoken');
+const secret = '123456789'; // Dummy secret, use env variable
+
+export const authenticate: RequestHandler = async (req, res, next) => {
+    const token = req.header('Authorization');
+    if (!token) return res.status(400).send('Missing headers');
+
+    jwt.verify(token, secret, (err: Error, decoded: { id: number }) => {
+        if (err) return res.status(401).send("No bueno compadre!");
+        req.prisma.user.findUnique({ where: { id: decoded.id } })
+            .then((user) => {
+                if (!user) return res.status(404).send("No bueno compadre!");
+                req.user = user;
+                next();
+            });
+    });
+}
 
 router.get('/', async (req, res) => {
     const users = await req.prisma.user.findMany({ orderBy: { id: 'asc' } });
     res.json(users);
-})
+});
 
 router.post('/', async (req, res) => {
     res.json(await req.prisma.user.create({ data: req.body }));
 });
 
 router.post('/register', async (req, res) => {
-
     let { email, password } = req.body;
-
     // create a user
     const user = await req.prisma.user.create({
         data: {
@@ -28,13 +43,21 @@ router.post('/register', async (req, res) => {
     });
 });
 
-// POST /login
-// GET /current-user
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const user = await req.prisma.user.findUnique({ where: { email } })
+    if (!user) return res.status(400);
 
-// libs I will need
-// jsonwebtoken for signing and verifying tokens
-// bcryptjs for hashing passwords before storage and checking for matches during login
+    if (compareSync(password, user.password)) {
+        const token = jwt.sign({ id: user.id }, secret);
+        return res.json({ token });
+    } else {
+        return res.sendStatus(401);
+    }
+});
 
-// keys needed: secret for signing/veryfing tokens
+router.get('/current', authenticate, async (req, res) => {
+    return res.json(req.user);
+});
 
 export default router;

@@ -1,11 +1,12 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, User } from "@prisma/client"
 
 export { }
 
 declare global {
     namespace Express {
         export interface Request {
-            prisma: PrismaClient
+            prisma: PrismaClient,
+            user?: User
         }
     }
 }
