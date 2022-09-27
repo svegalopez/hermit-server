@@ -1,28 +1,24 @@
+/* istanbul ignore file */
 import { execSync } from "child_process";
-import { writeFileSync } from "fs";
 
-module.exports = async function () {
 
-    execSync(`mkdir temp-${process.pid}`);
+// Jest calls this function once for every test file.
+// Jest calls this function first, then runs the test file after the function returns.
+// You can also return a promise and Jest will await it before calling the test file.
+module.exports = function () {
 
-    // Copy prisma directory from ./src/prisma into ./temp-<pid>
-    execSync(`cp -R ./src/prisma ./temp-${process.pid}`);
-    execSync(`rm ./temp-${process.pid}/prisma/.env`);
+    // Create a randomly named test database
+    const dbName = `test_${process.pid}_${Math.floor(Math.random() * 1000)}`;
 
-    // Generate a .env file
-    writeFileSync(`./temp-${process.pid}/prisma/.env`, `DATABASE_URL="mysql://root:rootroot@localhost:3306/test_${process.pid}"`)
+    // Set env variable to be used by the test run that will run right after this function returns.
+    process.env.DATABASE_URL = `mysql://root:rootroot@localhost:3306/${dbName}`;
 
-    // Set env variable
-    process.env.DATABASE_URL = `mysql://root:rootroot@localhost:3306/${"test_" + process.pid}`
-    console.log(process.pid, process.env.DATABASE_URL);
+    // This is only used for deleting the test db at the end of the test run
+    process.env.DATABASE_NAME = dbName;
 
     // Create the db and apply migrations
-    execSync(`npx prisma migrate deploy --schema ./temp-${process.pid}/prisma/schema.prisma`).toString();
+    execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate deploy --schema ./src/prisma/schema.prisma`);
 
     // Seed test fixtures
-    execSync(`npx prisma db seed --schema ./temp-${process.pid}/prisma/schema.prisma`).toString();
-
-    await new Promise((res) => {
-        setTimeout(res, 0);
-    })
+    execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma db seed`).toString();
 }

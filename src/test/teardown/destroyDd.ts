@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const mysql = require("mysql");
 
 export default function () {
@@ -11,7 +12,7 @@ export default function () {
         conn.connect(function (err: Error) {
             if (err) rej(err);
             conn.query(
-                `DROP DATABASE IF EXISTS test_${process.pid}`,
+                `DROP DATABASE IF EXISTS ${process.env.DATABASE_NAME}`,
                 function (err: Error) {
                     if (err) return rej(err);
                     conn.end();

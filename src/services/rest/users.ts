@@ -6,4 +6,8 @@ router.get('/', async (req, res) => {
     res.json(users);
 })
 
+router.post('/', async (req, res) => {
+    res.json(await req.prisma.user.create({ data: req.body }));
+});
+
 export default router;

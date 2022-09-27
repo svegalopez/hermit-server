@@ -1,16 +1,19 @@
-import express, { Express as IExpress } from 'express';
+import express, { Express } from 'express';
 import server from './services/apollo/apollo';
 import api from './services';
 import { createServer, Server } from 'http';
 import { AddressInfo } from 'net';
 
+// The library gets initialized when a consumer imports the function "Hermit".
+// The server begins to listen after the function "Hermit" is called.
+// Hermit relies on the "DATABASE_URL" env variable, which must be set on the process that consumes this library.
 
 export interface IHermit {
-    app: IExpress,
+    app: Express,
     httpServer: Server
 }
 
-async function Hermit(): Promise<IHermit> {
+async function Hermit(port?: number): Promise<IHermit> {
 
     const app = express();
     const httpServer = createServer(app);
@@ -25,9 +28,13 @@ async function Hermit(): Promise<IHermit> {
     server.applyMiddleware({ app });
 
     // Listen
-    await new Promise<void>((res) => httpServer.listen({ port: 0 }, res));
+    await new Promise<void>((res) => httpServer.listen({ port: port || 0 }, res));
     const address = httpServer.address() as AddressInfo;
-    console.log(`🦀 Hermit ready at "http://localhost:${address.port}" 🐚`);
+
+    console.log(`
+        🦀 Hermit ready at "http://localhost:${address.port}" 
+        🐚 DB URL: ${process.env.DATABASE_URL}
+    `);
 
     return {
         app,
