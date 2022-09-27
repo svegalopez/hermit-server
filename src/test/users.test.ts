@@ -17,19 +17,26 @@ describe("Users", () => {
         await destroyDd();
     });
 
-    describe("REST", () => {
-        it("should return all users", async () => {
+    describe("GET /users", () => {
+        it("should list users", async () => {
             const { body } = await request(hermit.app).get("/api/users");
-            const mapper = (user: User) => ({ email: user.email });
-            expect(body.map(mapper)).toEqual(data);
+            expect(body.map((el: User) => el.email)).toEqual(data.map(el => el.email));
         });
+    });
 
+    describe("POST /users", () => {
         it("should create a user", async () => {
+            const data: Omit<User, "id"> = {
+                email: "figaro@test.com",
+                password: 'Password1!'
+            };
+
             const { body } = await request(hermit.app)
                 .post("/api/users")
-                .send({ email: "figaro@test.com" });
+                .send(data);
 
-            expect(body.email).toEqual("figaro@test.com");
+            expect(typeof body.id).toEqual("number");
+            expect(body.email).toEqual(data.email);
 
             const u = await prisma.user.findUnique({ where: { email: "figaro@test.com" } });
             expect(u).toEqual(body);
