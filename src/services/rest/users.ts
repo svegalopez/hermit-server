@@ -6,12 +6,8 @@ router.get('/', async (req, res) => {
     res.json(users);
 })
 
-router.post('/login', async (req, res) => {
-    // obtain user from db
-    // check passwords
-    // sign a token and send to user
-    console.log('this does not run');
-    res.sendStatus(200);
-})
+router.post('/', async (req, res) => {
+    res.json(await req.prisma.user.create({ data: req.body }));
+});
 
 export default router;

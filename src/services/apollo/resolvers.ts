@@ -10,8 +10,6 @@ export const resolvers = {
             const user = await context.prisma.user.create({
                 data: args.user,
             });
-
-            console.log(user);
             return user;
         }
     }
