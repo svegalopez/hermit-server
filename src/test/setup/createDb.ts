@@ -17,7 +17,7 @@ module.exports = function () {
     process.env.DATABASE_NAME = dbName;
 
     // Create the db and apply migrations
-    execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate deploy --schema ./src/prisma/schema.prisma`);
+    execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate deploy --schema ./src/hermit/prisma/schema.prisma`);
 
     // Seed application data
     execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma db seed`).toString();

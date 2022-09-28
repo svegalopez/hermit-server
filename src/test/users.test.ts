@@ -1,8 +1,9 @@
 import request from 'supertest';
-import data from '../prisma/seed/data';
 import { PrismaClient, User } from '@prisma/client';
+
+import data from '../hermit/prisma/seed/data';
 import Hermit, { IHermit } from '../hermit';
-import destroyDd from './teardown/destroyDd';
+import destroyDb from './teardown/destroyDb';
 
 describe("Users", () => {
 
@@ -14,7 +15,7 @@ describe("Users", () => {
 
     afterAll(async () => {
         hermit.httpServer.close();
-        await destroyDd();
+        await destroyDb();
     });
 
     describe("GET /users", () => {

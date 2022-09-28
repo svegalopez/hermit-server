@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && dotenv -e ./src/prisma/.env.local -- node dist/index.js",
+    "start": "tsc && dotenv -e ./src/hermit/prisma/.env.local -- node dist/index.js",
     "start:watch": "nodemon -e ts --exec \"npm start\"",
-    "migrate": "dotenv -e ./src/prisma/.env.local -- prisma migrate dev --schema ./src/prisma/schema.prisma",
-    "studio": "dotenv -e ./src/prisma/.env.local -- prisma studio --schema ./src/prisma/schema.prisma",
-    "reset": "dotenv -e ./src/prisma/.env.local -- prisma migrate reset --schema ./src/prisma/schema.prisma",
+    "migrate": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate dev --schema ./src/hermit/prisma/schema.prisma",
+    "studio": "dotenv -e ./src/hermit/prisma/.env.local -- prisma studio --schema ./src/hermit/prisma/schema.prisma",
+    "reset": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma",
     "test": "jest --verbose"
   },
   "devDependencies": {
@@ -37,6 +37,6 @@
     "ts-jest": "^29.0.2"
   },
   "prisma": {
-    "seed": "node dist/prisma/seed/index.js"
+    "seed": "node dist/hermit/prisma/seed/index.js"
   }
 }

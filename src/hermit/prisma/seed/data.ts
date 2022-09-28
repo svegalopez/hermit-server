@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { hashSync } from "bcrypt";
 
 export default [

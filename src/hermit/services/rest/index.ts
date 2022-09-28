@@ -1,6 +1,8 @@
 import express from 'express';
-import prisma from './prisma';
-import users, { authenticate } from './rest/users';
+
+import prisma from '../prisma';
+import users, { authenticate } from './users';
+
 const router = express.Router();
 
 router.use(express.json());

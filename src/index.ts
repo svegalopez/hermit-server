@@ -1,9 +1,8 @@
-import Hermit from './hermit';
+import listen from './hermit';
 
-// This program relies on the env variable "DATABASE_URL" being set
+// This program relies on the "DATABASE_URL" env variable 
 async function main() {
-    await Hermit(4000);
-    // Server listening in port 4000...
+    await listen(4000);
 }
 
 main();
