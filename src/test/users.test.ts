@@ -75,36 +75,38 @@ describe("Users", () => {
         });
     })
 
-    // describe("GQL", () => {
-    //     // it('should return all users', async () => {
-    //     //     const { body } = await request(hermit.app).post("/graphql").send({
-    //     //         query: 'query{users{email}}'
-    //     //     })
-    //     //     expect(body.data.users).toEqual(data);
-    //     // });
+    describe("GQL", () => {
 
-    //     it("should create a a female user", async () => {
+        it('should return all users', async () => {
+            const { body } = await request(hermit.app).post("/graphql").send({
+                query: 'query{users{email}}'
+            })
 
-    //         console.log(process.pid, 'creating susana');
+            expect(body.data.users.length).toEqual(3);
+        });
 
-    //         let query = `mutation CreateUser($user: UserInput!) {
-    //             createUser(user: $user) {
-    //                 email,
-    //                 id
-    //             }
-    //         }`;
+        it("should create a user", async () => {
+            const user: Omit<User, "id"> = {
+                email: 'susana_' + Date.now() + '@test.com',
+                password: 'Password1!'
+            };
 
-    //         const { body } = await request(hermit.app)
-    //             .post("/graphql")
-    //             .send({
-    //                 query,
-    //                 variables: {
-    //                     user: {
-    //                         email: 'susana_' + Date.now() + '@test.com'
-    //                     }
-    //                 },
-    //             });
-    //         expect(typeof body.data.createUser.id).toEqual("number");
-    //     });
-    // });
+            let query = `mutation CreateUser($user: UserInput!) {
+                createUser(user: $user) {
+                    email,
+                    id
+                }
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .send({
+                    query,
+                    variables: { user },
+                });
+
+            expect(body.errors).toBe(undefined);
+            expect(typeof body.data.createUser.id).toEqual("number");
+            expect(body.data.createUser.email.includes('susana')).toEqual(true);
+        });
+    });
 });

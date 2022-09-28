@@ -4,7 +4,7 @@ import prisma from "../prisma";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./typeDefs";
 
-const server = new ApolloServer({
+const apollo = new ApolloServer({
     typeDefs,
     resolvers,
     context: (req: Express.Request, res: Express.Response) => {
@@ -16,4 +16,4 @@ const server = new ApolloServer({
     }
 });
 
-export default server;
+export default apollo;
