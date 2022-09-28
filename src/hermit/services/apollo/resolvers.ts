@@ -7,16 +7,9 @@ export const resolvers = {
     },
     Mutation: {
         createUser: async (_parent: any, args: any, context: { prisma: PrismaClient }) => {
-
-            console.log('im here');
-
             const user = await context.prisma.user.create({
                 data: args.user,
             });
-
-            console.log('I am here!!!');
-            console.log(user);
-
             return user;
         }
     }

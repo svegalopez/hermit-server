@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import request from 'supertest';
 import { PrismaClient, User } from '@prisma/client';
 
@@ -26,6 +27,11 @@ describe("Users", () => {
     });
 
     describe("POST /users", () => {
+        beforeAll(() => {
+            console.log('🍄 Reset... 🍄');
+            execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
+        });
+
         it("should create a user", async () => {
             const data: Omit<User, "id"> = {
                 email: "figaro@test.com",
@@ -42,9 +48,13 @@ describe("Users", () => {
             const u = await prisma.user.findUnique({ where: { email: "figaro@test.com" } });
             expect(u).toEqual(body);
         });
-    })
+    });
 
     describe("POST /users/login", () => {
+        beforeAll(() => {
+            console.log('🍄 Reset... 🍄');
+            execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
+        });
 
         it("should login a user", async () => {
             const { body } = await request(hermit.app)
@@ -55,9 +65,13 @@ describe("Users", () => {
                 });
             expect(typeof body.token).toEqual("string");
         });
-    })
+    });
 
     describe("GET /users/current", () => {
+        beforeAll(() => {
+            console.log('🍄 Reset... 🍄');
+            execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
+        });
 
         it("should get the current user", async () => {
             const { body } = await request(hermit.app)
@@ -73,16 +87,19 @@ describe("Users", () => {
             expect(res.body.email).toEqual("svegalopez@gmail.com");
             expect(res.body.id).toEqual(1);
         });
-    })
+    });
 
     describe("GQL", () => {
+        beforeAll(() => {
+            console.log('🍄 Reset... 🍄');
+            execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
+        });
 
         it('should return all users', async () => {
             const { body } = await request(hermit.app).post("/graphql").send({
                 query: 'query{users{email}}'
-            })
-
-            expect(body.data.users.length).toEqual(3);
+            });
+            expect(body.data.users.map((el: User) => el.email)).toEqual(data.map(el => el.email));
         });
 
         it("should create a user", async () => {
