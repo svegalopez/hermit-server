@@ -6,7 +6,7 @@ const secret = '123456789'; // Dummy secret, use env variable
 
 export const authenticate: RequestHandler = async (req, res, next) => {
     const token = req.header('Authorization');
-    if (!token) return res.status(400).send('Missing headers');
+    if (!token) return res.status(400).send('No comprende español');
 
     jwt.verify(token, secret, (err: Error, decoded: { id: number }) => {
         if (err) return res.status(401).send("No bueno compadre!");
@@ -44,13 +44,16 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
+
+    console.log(req.headers);
+
     const { email, password } = req.body;
     const user = await req.prisma.user.findUnique({ where: { email } })
     if (!user) return res.status(400);
 
     if (compareSync(password, user.password)) {
         const token = jwt.sign({ id: user.id }, secret);
-        return res.json({ token });
+        return res.cookie('Agent-Key', '999').json({ token });
     } else {
         return res.sendStatus(401);
     }
