@@ -6,7 +6,7 @@ declare global {
     namespace Express {
         export interface Request {
             prisma: PrismaClient,
-            user?: User
+            user?: Omit<User, "password">
         }
     }
 }
