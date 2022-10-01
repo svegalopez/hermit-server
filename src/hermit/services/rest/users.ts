@@ -64,7 +64,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await req.prisma.user.findUnique({ where: { email } })
-    if (!user) return res.status(400);
+    if (!user) return res.sendStatus(400);
 
     if (compareSync(password, user.password)) {
         const token = jwt.sign({ id: user.id }, secret);
