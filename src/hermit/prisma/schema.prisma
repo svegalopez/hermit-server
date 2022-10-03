@@ -18,9 +18,7 @@ model User {
 }
 
 model UserLogin {
+  agentKey String @unique
   userId   Int
-  agentKey String
   user     User   @relation(fields: [userId], references: [id])
-
-  @@unique([userId, agentKey])
 }
