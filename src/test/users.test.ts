@@ -51,8 +51,13 @@ describe("Users Service", () => {
     });
 
     describe("DELETE /api/users/logout", () => {
-        it("should be ablo to log out", () => { });
-        it("should return 400 when no credentials are present in the headers", () => { });
+        it("should be able to log out", () => {
+
+        });
+
+        it("should return 400 when no credentials are present in the headers", () => {
+
+        });
 
         it("should return 404 when userLogin cannot be deleted", () => {
 
