@@ -57,7 +57,7 @@ router.delete('/logout', async (req, res) => {
         where: {
             agentKey
         }
-    }).catch((err: Error) => console.error(err))
+    }).catch(_ => null);
 
     if (userLogin) return res.sendStatus(200);
     return res.sendStatus(404);
@@ -65,7 +65,7 @@ router.delete('/logout', async (req, res) => {
 
 router.get('/well-known', async (req, res) => {
     const agentKey = req.cookies['Agent-Key'];
-    if (!agentKey) return res.status(400).send({ err: 'Missing credentials' })
+    if (!agentKey) return res.status(400).send({ error: 'Missing credentials' })
 
     const login = await req.prisma.userLogin.findUnique({
         where: { agentKey },
@@ -79,7 +79,7 @@ router.get('/well-known', async (req, res) => {
         }
     });
 
-    if (!login) return res.status(401).send({ err: 'Invalid credentials' })
+    if (!login) return res.status(404).send({ error: 'Credentials not found' })
 
     const token = sign({ id: login.user.id }, secret).split('.');
 

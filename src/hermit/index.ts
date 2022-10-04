@@ -18,7 +18,7 @@ import apollo from './services/apollo';
  *  server.
  * 
  */
-export default async (port?: number): Promise<IHermit> => {
+export default async (port?: number | string): Promise<IHermit> => {
 
     const app = express();
     const httpServer = createServer(app);
