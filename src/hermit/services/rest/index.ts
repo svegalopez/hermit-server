@@ -12,6 +12,8 @@ router.use(cors({
     credentials: true,
     origin: function (origin, callback) {
         if (!origin) return callback(null, true) //return callback(new Error('Invalid request'))
+
+        /* istanbul ignore next  */
         if (origin.includes('localhost:3000')) {
             callback(null, true)
         } else {
