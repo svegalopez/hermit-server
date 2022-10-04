@@ -3,7 +3,6 @@ import { compareSync, hashSync } from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { User } from '@prisma/client';
 import { JwtPayload, verify, sign } from 'jsonwebtoken';
-
 const secret = '123456789'; // Dummy secret, use env variable
 const router = express.Router();
 
@@ -23,30 +22,6 @@ export const authenticate: RequestHandler = async (req, res, next) => {
         next();
     });
 }
-
-router.get('/', async (req, res) => {
-    const users = await req.prisma.user.findMany({ orderBy: { id: 'asc' } });
-    res.json(users);
-});
-
-router.post('/', async (req, res) => {
-    res.json(await req.prisma.user.create({ data: req.body }));
-});
-
-router.post('/register', async (req, res) => {
-    let { email, password } = req.body;
-    // create a user
-    const user = await req.prisma.user.create({
-        data: {
-            email,
-            password: hashSync(password, 10)
-        }
-    });
-    return res.json({
-        email: user.email,
-        id: user.id
-    });
-});
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -76,7 +51,7 @@ router.post('/login', async (req, res) => {
 
 router.delete('/logout', async (req, res) => {
     const agentKey = req.cookies['Agent-Key'];
-    if (!agentKey) return res.sendStatus(404);
+    if (!agentKey) return res.sendStatus(400);
 
     const userLogin = await req.prisma.userLogin.delete({
         where: {
@@ -88,11 +63,11 @@ router.delete('/logout', async (req, res) => {
     return res.sendStatus(404);
 });
 
-router.get('/current', async (req, res) => {
+router.get('/well-known', async (req, res) => {
     const agentKey = req.cookies['Agent-Key'];
     if (!agentKey) return res.status(400).send({ err: 'Missing credentials' })
 
-    const login = await req.prisma.userLogin.findFirst({
+    const login = await req.prisma.userLogin.findUnique({
         where: { agentKey },
         select: {
             user: {
@@ -102,12 +77,22 @@ router.get('/current', async (req, res) => {
                 }
             }
         }
-    })
+    });
 
     if (!login) return res.status(401).send({ err: 'Invalid credentials' })
-    const token = sign({ id: login.user.id }, secret);
 
-    return res.json({ user: login.user, token });
+    const token = sign({ id: login.user.id }, secret).split('.');
+
+    return res.json({
+        user: login.user,
+        tp1: token[2],
+        tp2: token[1],
+        tp3: token[0]
+    });
+});
+
+router.get('/', authenticate, (req, res) => {
+    return res.json(['user1', 'user2', 'user3']);
 });
 
 export default router;

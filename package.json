@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && dotenv -e ./src/hermit/prisma/.env.local -- node dist/index.js",
-    "start:watch": "nodemon -e ts --exec \"npm start\"",
+    "launch": "tsc && dotenv -e ./src/hermit/prisma/.env.local -- node dist/index.js",
+    "start": "nodemon -e ts --exec \"npm run launch\"",
     "migrate": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate dev --schema ./src/hermit/prisma/schema.prisma",
     "studio": "dotenv -e ./src/hermit/prisma/.env.local -- prisma studio --schema ./src/hermit/prisma/schema.prisma",
     "reset": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma",
