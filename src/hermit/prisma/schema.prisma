@@ -11,7 +11,14 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int         @id @default(autoincrement())
   password String
-  email    String @unique
+  email    String      @unique
+  logins   UserLogin[]
+}
+
+model UserLogin {
+  agentKey String @unique
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
 }
