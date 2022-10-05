@@ -1,13 +1,13 @@
 /* istanbul ignore file */
-import { hashSync } from "bcrypt";
+import { getHash } from './../../utils/passwordHash';
 
 export default [
     {
         email: 'svegalopez@gmail.com',
-        password: hashSync('Rootroot1!', 10)
+        password: getHash('Rootroot1!')
     },
     {
         email: 'sebastianvega.dev@gmail.com',
-        password: hashSync('Rootroot1!', 10)
+        password: getHash('Rootroot1!')
     }
 ];

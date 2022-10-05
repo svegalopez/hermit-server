@@ -1,5 +1,5 @@
 import express, { RequestHandler } from 'express';
-import { compareSync, hashSync } from 'bcrypt';
+import { compareSync } from '../../utils/passwordHash';
 import { randomUUID } from 'crypto';
 import { User } from '@prisma/client';
 import { JwtPayload, verify, sign } from 'jsonwebtoken';
