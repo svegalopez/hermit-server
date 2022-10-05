@@ -10,7 +10,7 @@
     "reset:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma",
     "start": "tsc && node dist/index.js",
     "migrate:deploy": "npx prisma migrate deploy --schema ./src/hermit/prisma/schema.prisma",
-    "heroku-postbuild": "npm run migrate:deploy && npx prisma generate --schema ./src/hermit/prisma/schema.prisma",
+    "release": "npm run migrate:deploy && npx prisma generate --schema ./src/hermit/prisma/schema.prisma",
     "test": "npx tsc && jest --verbose",
     "seed": "npx tsc && node dist/hermit/prisma/seed/entry.js"
   },
