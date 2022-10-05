@@ -4,7 +4,7 @@ import data from './data';
 async function main() {
     const prisma = new PrismaClient();
     await prisma.user.createMany({ data });
-    await prisma.$disconnect
+    await prisma.$disconnect();
 }
 
 main().then(() => {
