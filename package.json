@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npx prisma generate --schema ./src/hermit/prisma/schema.prisma",
+    "build": "npx prisma generate --schema ./src/hermit/prisma/schema.prisma && tsc",
     "start:dev": "nodemon -e ts --exec \"tsc && dotenv -e ./src/hermit/prisma/.env.local -- node dist/index.js\"",
     "migrate:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate dev --schema ./src/hermit/prisma/schema.prisma",
     "studio:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma studio --schema ./src/hermit/prisma/schema.prisma",
