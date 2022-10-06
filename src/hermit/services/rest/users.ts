@@ -95,4 +95,6 @@ router.get('/', authenticate, (req, res) => {
     return res.json(['user1', 'user2', 'user3']);
 });
 
+// dummy
+
 export default router;
