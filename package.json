@@ -42,5 +42,8 @@
   },
   "prisma": {
     "seed": "node dist/hermit/prisma/seed/index.js"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
