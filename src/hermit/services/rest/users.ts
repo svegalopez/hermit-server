@@ -3,7 +3,7 @@ import { compareSync } from '../../utils/passwordHash';
 import { randomUUID } from 'crypto';
 import { User } from '@prisma/client';
 import { JwtPayload, verify, sign } from 'jsonwebtoken';
-const secret = '123456789'; // Dummy secret, use env variable
+const secret = process.env.JWT_SECRET || '123456789';
 const router = express.Router();
 
 export const authenticate: RequestHandler = async (req, res, next) => {
