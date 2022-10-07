@@ -41,7 +41,8 @@ router.post('/login', async (req, res) => {
 
         delete (user as Partial<User>).password;
         return res.cookie('Agent-Key', agentKey, {
-            httpOnly: true
+            httpOnly: true,
+            sameSite: 'none'
         }).json({ token, user });
 
     } else {
