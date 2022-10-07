@@ -44,15 +44,14 @@ router.post('/login', async (req, res) => {
         /*
             When logging in from https:
             In order for the browser to store this cookie the following settings are neeeded.
-            However, when developing locally the "secure" option won't work. 
+            However, when developing locally the "secure" option won't work.
+            Heroku sets NODE_ENV to 'production', so as long as we are on heroku,
+            we will set 'sameSite' to 'none' and 'secure' to 'true'
         */
-
-        console.log(process.env.NODE_ENV)
-
         return res.cookie('Agent-Key', agentKey, {
             httpOnly: true,
-            sameSite: 'none',
-            secure: true
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: process.env.NODE_ENV === 'production'
         }).json({ token, user });
 
     } else {
