@@ -60,17 +60,22 @@ router.post('/login', async (req, res) => {
 });
 
 router.delete('/logout', async (req, res) => {
-    const agentKey = req.cookies['Agent-Key'];
-    if (!agentKey) return res.sendStatus(400);
+    async function handle() {
+        const agentKey = req.cookies['Agent-Key'];
+        if (!agentKey) return res.sendStatus(400);
 
-    const userLogin = await req.prisma.userLogin.delete({
-        where: {
-            agentKey
-        }
-    }).catch(_ => null);
+        await req.prisma.userLogin.delete({
+            where: {
+                agentKey
+            }
+        });
+        return res.sendStatus(200);
+    }
 
-    if (userLogin) return res.sendStatus(200);
-    return res.sendStatus(404);
+    await handle().catch(err => {
+        let status = (err.code && err.code === 'P2025') ? 404 : 500;
+        res.status(status).send(err.message || err.code || err);
+    });
 });
 
 router.get('/well-known', async (req, res) => {
