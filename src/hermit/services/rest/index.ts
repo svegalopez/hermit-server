@@ -9,7 +9,15 @@ const router = express.Router();
 
 router.use(cookieParser());
 router.use(cors({
-    credentials: true
+    credentials: true,
+    origin: function (origin, callback) {
+        /* istanbul ignore next  */
+        if (!origin || origin.includes('localhost') || origin.includes('hermit-client')) {
+            callback(null, true)
+        } else {
+            callback(null, false)
+        }
+    }
 }));
 router.use(express.json());
 
