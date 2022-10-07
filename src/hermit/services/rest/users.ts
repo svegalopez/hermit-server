@@ -40,9 +40,19 @@ router.post('/login', async (req, res) => {
         });
 
         delete (user as Partial<User>).password;
+
+        /*
+            When logging in from https:
+            In order for the browser to store this cookie the following settings are neeeded.
+            However, when developing locally the "secure" option won't work. 
+        */
+
+        console.log(process.env.NODE_ENV)
+
         return res.cookie('Agent-Key', agentKey, {
             httpOnly: true,
-            sameSite: 'none'
+            sameSite: 'none',
+            secure: true
         }).json({ token, user });
 
     } else {
