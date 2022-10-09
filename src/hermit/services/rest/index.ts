@@ -12,11 +12,7 @@ router.use(cors({
     credentials: true,
     origin: function (origin, callback) {
         /* istanbul ignore next  */
-        if (!origin || origin.includes('localhost') || origin.includes('hermit-client')) {
-            callback(null, true)
-        } else {
-            callback(null, false)
-        }
+        callback(null, true);
     }
 }));
 router.use(express.json());
