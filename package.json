@@ -4,15 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx prisma generate --schema ./src/hermit/prisma/schema.prisma && tsc",
-    "start:dev": "nodemon -e ts --exec \"tsc && dotenv -e ./src/hermit/prisma/.env.local -- node dist/index.js\"",
-    "migrate:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate dev --schema ./src/hermit/prisma/schema.prisma",
     "studio:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma studio --schema ./src/hermit/prisma/schema.prisma",
     "reset:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma",
+    "migrate:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate dev --schema ./src/hermit/prisma/schema.prisma",
+    "start:dev": "nodemon -e ts --exec \"tsc && dotenv -e ./src/hermit/prisma/.env.local -- node dist/index.js\"",
+    "build": "npx prisma generate --schema ./src/hermit/prisma/schema.prisma && tsc",
     "start": "node dist/index.js",
     "release": "npx prisma migrate deploy --schema ./src/hermit/prisma/schema.prisma",
     "test": "npx tsc && jest --verbose",
-    "seed": "npx tsc && node dist/hermit/prisma/seed/entry.js"
+    "seed": "npx tsc && node dist/hermit/prisma/seed/entry.js",
+    "reset:staging": "dotenv -e ./src/hermit/prisma/.env.staging -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma",
+    "reset:production": "dotenv -e ./src/hermit/prisma/.env.production -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",
