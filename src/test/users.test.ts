@@ -2,7 +2,6 @@ import { execSync } from 'child_process';
 import request from 'supertest';
 import { PrismaClient, User } from '@prisma/client';
 
-import data from '../hermit/prisma/seed/data';
 import Hermit, { IHermit } from '../hermit';
 import destroyDb from './teardown/destroyDb';
 
