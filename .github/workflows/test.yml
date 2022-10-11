@@ -38,4 +38,4 @@ jobs:
           mysql -e "flush privileges;" -h 127.0.0.1 -u root -prootroot
 
       - name: Run tests
-        run: npm test
+        run: npm test && npm run enforce
