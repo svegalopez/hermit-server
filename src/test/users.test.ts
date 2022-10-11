@@ -5,7 +5,7 @@ import { PrismaClient, User } from '@prisma/client';
 import Hermit, { IHermit } from '../hermit';
 import destroyDb from './teardown/destroyDb';
 
-describe("Users Service", () => {
+describe("Users Service /users", () => {
 
     let hermit: IHermit;
     let prisma = new PrismaClient();
@@ -150,4 +150,33 @@ describe("Users Service", () => {
             expect(res.body).toEqual({ error: 'User not found' });
         })
     });
+
+    describe("GET /current", () => {
+
+        let token = '';
+        beforeAll(async () => {
+            const { status, body } = await request(hermit.app).post("/api/users/login").send({
+                email: 'admin1@test.com',
+                password: 'Rootroot1!'
+            });
+            expect(status).toBe(200);
+            token = body.token;
+        });
+
+        it('should get the currently logged in user', async () => {
+            let { status, body } = await request(hermit.app).get("/api/users/current").set('Authorization', token);
+            expect(status).toBe(200);
+            expect(body.email).toBe('admin1@test.com');
+        });
+
+        it('should 400 if credentials are not provided', async () => {
+            let { status } = await request(hermit.app).get("/api/users/current");
+            expect(status).toBe(400);
+        });
+
+        it('should 401 if credentials are invalid', async () => {
+            let { status } = await request(hermit.app).get("/api/users/current").set('Authorization', '123456789');
+            expect(status).toBe(401);
+        });
+    })
 });
