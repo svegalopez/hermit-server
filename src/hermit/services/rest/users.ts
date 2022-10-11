@@ -110,6 +110,8 @@ router.get('/', authenticate, (req, res) => {
     return res.json(['user1', 'user2', 'user3']);
 });
 
-// dummy
+router.get('/current', authenticate, async (req, res) => {
+    return res.json(req.user);
+});
 
 export default router;
