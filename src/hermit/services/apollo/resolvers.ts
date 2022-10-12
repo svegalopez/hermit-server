@@ -2,7 +2,7 @@ import { AuthenticationError } from 'apollo-server-express';
 import { hasRole } from './../../utils/hasRole';
 import { IContext } from './index';
 import { MutationCreateUserArgs, User } from './gql-types.d';
-import { UserRoles } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 export const resolvers = {
     Query: {
@@ -28,7 +28,7 @@ export const resolvers = {
             const user = {
                 ...context.user
             }
-            user.roles = user.userRoles.map((el: UserRoles) => {
+            user.roles = user.userRoles.map((el: UserRole) => {
                 return {
                     name: el.roleName
                 }

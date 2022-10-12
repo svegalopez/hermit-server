@@ -5,9 +5,9 @@ import { resolvers } from "./resolvers";
 import { typeDefs } from "./typeDefs";
 import { Request, Response } from 'express';
 import { JwtPayload, verify } from "jsonwebtoken";
-import { PrismaClient, User, UserRoles } from "@prisma/client";
+import { PrismaClient, User, UserRole } from "@prisma/client";
 
-export type CtxUser = Partial<User> & { userRoles: UserRoles[] }
+export type CtxUser = Partial<User> & { userRoles: UserRole[] }
 
 export interface IContext {
     req: Request,

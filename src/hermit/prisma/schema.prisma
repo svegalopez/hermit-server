@@ -15,7 +15,7 @@ model User {
   password   String
   email      String      @unique
   userLogins UserLogin[]
-  userRoles  UserRoles[]
+  userRoles  UserRole[]
 }
 
 model UserLogin {
@@ -24,7 +24,7 @@ model UserLogin {
   user     User   @relation(fields: [userId], references: [id])
 }
 
-model UserRoles {
+model UserRole {
   userId   Int
   roleName String
 
@@ -35,6 +35,6 @@ model UserRoles {
 }
 
 model Role {
-  name      String      @unique
-  userRoles UserRoles[]
+  name      String     @unique
+  userRoles UserRole[]
 }
