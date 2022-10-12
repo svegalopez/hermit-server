@@ -1,5 +1,6 @@
 import { randomBytes, scryptSync } from "crypto";
 
+/* istanbul ignore next */
 export const getHash = (password: string) => {
     const salt = randomBytes(16).toString("hex");
     return `${scryptSync(password, salt, 32).toString("hex")}-$-${salt}`;

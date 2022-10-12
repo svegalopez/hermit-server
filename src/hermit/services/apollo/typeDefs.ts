@@ -4,7 +4,7 @@ export const typeDefs = gql`
   type User {
     id: Int!
     email: String!
-    roles: [Role!]
+    roles: [Role!]!
   }
 
   type Role {
@@ -18,7 +18,7 @@ export const typeDefs = gql`
 
   type Query {
     users: [User!]!
-    currentUser: User
+    currentUser: User!
   }
 
   type Mutation {

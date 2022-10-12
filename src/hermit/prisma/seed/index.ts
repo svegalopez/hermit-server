@@ -15,7 +15,7 @@ async function main() {
         }
     });
     if (!user) throw Error('User not found');
-    await prisma.userRoles.create({
+    await prisma.userRole.create({
         data: {
             userId: user.id,
             roleName: 'admin'

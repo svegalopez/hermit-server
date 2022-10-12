@@ -1,0 +1,5 @@
+schema: "./src/hermit/services/apollo/typeDefs.ts" # GraphQL types (input file)
+generates:
+  ./src/hermit/services/apollo/gql-types.d.ts: # Typescript types (output generated file)
+    plugins: # List of needed plugins (installed as devDeps)
+      - typescript
