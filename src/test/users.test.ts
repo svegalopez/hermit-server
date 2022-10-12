@@ -93,7 +93,6 @@ describe("Users Service /users", () => {
 
             expect(res.status).toBe(200);
 
-            const user = res.body.user;
             const token = `${res.body.tp3}.${res.body.tp2}.${res.body.tp1}`;
 
             res = await request(hermit.app).get('/api/users/').set('Authorization', token);
@@ -210,30 +209,6 @@ describe("Users Service /users", () => {
             expect(body.data.currentUser.email).toEqual('admin1@test.com');
             expect(body.data.currentUser.roles).toEqual([{ name: 'admin' }]);
         });
-
-        // it("should create a user", async () => {
-        //     const user: Omit<User, "id"> = {
-        //         email: 'susana_' + Date.now() + '@test.com',
-        //         password: 'Password1!'
-        //     };
-
-        //     let query = `mutation CreateUser($user: UserInput!) {
-        //         createUser(user: $user) {
-        //             email,
-        //             id
-        //         }
-        //     }`;
-        //     const { body } = await request(hermit.app)
-        //         .post("/graphql")
-        //         .send({
-        //             query,
-        //             variables: { user },
-        //         });
-
-        //     expect(body.errors).toBe(undefined);
-        //     expect(typeof body.data.createUser.id).toEqual("number");
-        //     expect(body.data.createUser.email.includes('susana')).toEqual(true);
-        // });
     });
 
     describe("GQL context", () => {
@@ -256,8 +231,141 @@ describe("Users Service /users", () => {
         })
     })
 
-    // beforeAll(() => {
-    //     console.log('🍄 Reset... 🍄');
-    //     execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
-    // });
+    describe("GQL Mutation.createUser", () => {
+        let token = '';
+        let nonAdminToken = '';
+        beforeAll(async () => {
+            let { status, body } = await request(hermit.app).post("/api/users/login").send({
+                email: 'admin1@test.com',
+                password: 'Rootroot1!'
+            });
+            expect(status).toBe(200);
+            token = body.token;
+
+            let res = await request(hermit.app).post("/api/users/login").send({
+                email: 'svegalopez@gmail.com',
+                password: 'Rootroot1!'
+            });
+            expect(res.status).toBe(200);
+            nonAdminToken = res.body.token;
+        });
+
+        it("should create a user", async () => {
+            const user: Omit<User, "id"> = {
+                email: 'susana_' + Date.now() + '@test.com',
+                password: 'Password1!'
+            };
+
+            let query = `mutation CreateUser($user: UserInput!) {
+                createUser(user: $user) {
+                    email,
+                    id
+                }
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .set('Authorization', token)
+                .send({
+                    query,
+                    variables: { user },
+                });
+
+            expect(body.errors).toBe(undefined);
+            expect(typeof body.data.createUser.id).toEqual("number");
+            expect(body.data.createUser.email.includes('susana')).toEqual(true);
+        });
+
+        it('should error out creating a user as a non-admin', async () => {
+            const user: Omit<User, "id"> = {
+                email: 'susana_' + Date.now() + '@test.com',
+                password: 'Password1!'
+            };
+
+            let query = `mutation CreateUser($user: UserInput!) {
+                createUser(user: $user) {
+                    email,
+                    id
+                }
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .set('Authorization', nonAdminToken)
+                .send({
+                    query,
+                    variables: { user },
+                });
+
+            expect(body.errors[0].message).toBe('Unauthorized');
+        })
+    });
+
+    describe("GQL Query.users", () => {
+        let token = '';
+        let nonAdminToken = '';
+
+        beforeAll(async () => {
+            console.log('🍄 Reset... 🍄');
+            execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
+
+            let { status, body } = await request(hermit.app).post("/api/users/login").send({
+                email: 'admin1@test.com',
+                password: 'Rootroot1!'
+            });
+            expect(status).toBe(200);
+            token = body.token;
+
+            let res = await request(hermit.app).post("/api/users/login").send({
+                email: 'svegalopez@gmail.com',
+                password: 'Rootroot1!'
+            });
+            expect(res.status).toBe(200);
+            nonAdminToken = res.body.token;
+        });
+
+        it("should list users", async () => {
+
+            let query = `query {
+                users {
+                    email,
+                    id,
+                    roles {
+                        name
+                    }
+                }
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .set('Authorization', token)
+                .send({
+                    query
+                });
+
+            expect(body.errors).toBe(undefined);
+            expect(body.data.users).toEqual([
+                { email: 'svegalopez@gmail.com', id: 1, roles: [] },
+                { email: 'sebastianvega.dev@gmail.com', id: 2, roles: [] },
+                { email: 'admin1@test.com', id: 3, roles: [{ name: 'admin' }] }
+            ]);
+        });
+
+        it('should error out listing users as a non-admin', async () => {
+            let query = `query {
+                users {
+                    email,
+                    id,
+                    roles {
+                        name
+                    }
+                }
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .set('Authorization', nonAdminToken)
+                .send({
+                    query
+                });
+
+            expect(body.errors[0].message).toBe('Unauthorized');
+        })
+    });
 });

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "generate:types": "graphql-codegen",
     "studio:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma studio --schema ./src/hermit/prisma/schema.prisma",
     "reset:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma",
     "migrate:dev": "dotenv -e ./src/hermit/prisma/.env.local -- prisma migrate dev --schema ./src/hermit/prisma/schema.prisma",
@@ -50,6 +51,9 @@
     "node": "16.x"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.13.6",
+    "@graphql-codegen/typescript": "^2.7.4",
+    "graphql-codegen": "^0.4.0",
     "nyc": "^15.1.0"
   }
 }

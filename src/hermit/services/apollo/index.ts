@@ -5,19 +5,28 @@ import { resolvers } from "./resolvers";
 import { typeDefs } from "./typeDefs";
 import { Request, Response } from 'express';
 import { JwtPayload, verify } from "jsonwebtoken";
-import { User } from "@prisma/client";
+import { PrismaClient, User, UserRoles } from "@prisma/client";
+
+export type CtxUser = Partial<User> & { userRoles: UserRoles[] }
+
+export interface IContext {
+    req: Request,
+    prisma: PrismaClient,
+    user: CtxUser
+}
 
 const secret = process.env.JWT_SECRET || '123456789';
 
 const apollo = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req }: { req: Request }) => {
+    context: async ({ req }: { req: Request }): Promise<IContext> => {
 
         const token = req.header('Authorization');
         if (!token) throw new AuthenticationError('Missing credentials');
 
-        const user: Omit<User, "password"> = await new Promise((res, rej) => {
+        const user = await new Promise<CtxUser>((res, rej) => {
+
             verify(token, secret, async (err, decoded) => {
                 if (err) return rej(new AuthenticationError('Invalid credentials'))
 
