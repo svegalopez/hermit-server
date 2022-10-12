@@ -4,6 +4,11 @@ export const typeDefs = gql`
   type User {
     id: Int!
     email: String!
+    roles: [Role!]
+  }
+
+  type Role {
+    name: String!
   }
 
   input UserInput {
@@ -13,6 +18,7 @@ export const typeDefs = gql`
 
   type Query {
     users: [User!]!
+    currentUser: User
   }
 
   type Mutation {
