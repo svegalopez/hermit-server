@@ -12,18 +12,24 @@ const secret = process.env.JWT_SECRET || '123456789';
 const apollo = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async (req: Request, res: Response) => {
+    context: async ({ req }: { req: Request }) => {
 
         const token = req.header('Authorization');
         if (!token) throw new AuthenticationError('Missing credentials');
 
-        const user: User = await new Promise((res, rej) => {
+        const user: Omit<User, "password"> = await new Promise((res, rej) => {
             verify(token, secret, async (err, decoded) => {
                 if (err) return rej(new AuthenticationError('Invalid credentials'))
 
                 const user = await prisma.user.findUnique({
-                    where: { id: (decoded as JwtPayload).id },
-                })
+                    select: {
+                        id: true,
+                        email: true,
+                        userRoles: true
+                    },
+                    where: { id: (decoded as JwtPayload).id }
+                });
+                /* istanbul ignore next */
                 if (!user) return rej(new AuthenticationError('User not found'))
                 return res(user);
             });
@@ -31,7 +37,6 @@ const apollo = new ApolloServer({
 
         return {
             req,
-            res,
             prisma,
             user
         }

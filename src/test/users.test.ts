@@ -4,6 +4,7 @@ import { PrismaClient, User } from '@prisma/client';
 
 import Hermit, { IHermit } from '../hermit';
 import destroyDb from './teardown/destroyDb';
+import { inspect } from 'util';
 
 describe("Users Service /users", () => {
 
@@ -179,4 +180,84 @@ describe("Users Service /users", () => {
             expect(status).toBe(401);
         });
     })
+
+    describe("GQL Query.currentUser", () => {
+
+        let token = '';
+        beforeAll(async () => {
+            const { status, body } = await request(hermit.app).post("/api/users/login").send({
+                email: 'admin1@test.com',
+                password: 'Rootroot1!'
+            });
+            expect(status).toBe(200);
+            token = body.token;
+        });
+
+        it('should get the current user', async () => {
+            const { body, status } = await request(hermit.app).post("/graphql").set('Authorization', token).send({
+                query: 'query{currentUser{email}}'
+            });
+            expect(status).toBe(200);
+            expect(body.data.currentUser).toEqual({ email: 'admin1@test.com' });
+        });
+
+        it('should get the current user and its roles', async () => {
+            const { body, status } = await request(hermit.app).post("/graphql").set('Authorization', token).send({
+                query: 'query{currentUser{email, roles{name}}}'
+            });
+
+            expect(status).toBe(200);
+            expect(body.data.currentUser.email).toEqual('admin1@test.com');
+            expect(body.data.currentUser.roles).toEqual([{ name: 'admin' }]);
+        });
+
+        // it("should create a user", async () => {
+        //     const user: Omit<User, "id"> = {
+        //         email: 'susana_' + Date.now() + '@test.com',
+        //         password: 'Password1!'
+        //     };
+
+        //     let query = `mutation CreateUser($user: UserInput!) {
+        //         createUser(user: $user) {
+        //             email,
+        //             id
+        //         }
+        //     }`;
+        //     const { body } = await request(hermit.app)
+        //         .post("/graphql")
+        //         .send({
+        //             query,
+        //             variables: { user },
+        //         });
+
+        //     expect(body.errors).toBe(undefined);
+        //     expect(typeof body.data.createUser.id).toEqual("number");
+        //     expect(body.data.createUser.email.includes('susana')).toEqual(true);
+        // });
+    });
+
+    describe("GQL context", () => {
+        it('should 400 if credentials are missing', async () => {
+            const { body, status } = await request(hermit.app).post("/graphql").send({
+                query: 'query{currentUser{email}}'
+            });
+
+            expect(status).toBe(400);
+            expect(body.errors[0].message).toBe('Context creation failed: Missing credentials')
+        });
+
+        it('should 400 if invalid credentials are provided', async () => {
+            const { body, status } = await request(hermit.app).post("/graphql").set('Authorization', '123456').send({
+                query: 'query{currentUser{email}}'
+            });
+
+            expect(status).toBe(400);
+            expect(body.errors[0].message).toBe('Context creation failed: Invalid credentials')
+        })
+    })
+
+    // beforeAll(() => {
+    //     console.log('🍄 Reset... 🍄');
+    //     execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
+    // });
 });
