@@ -2,9 +2,8 @@ import { AuthenticationError } from 'apollo-server-express';
 import { hasRole } from './../../utils/hasRole';
 import { IContext } from './index';
 import { MutationCreateUserArgs, User } from './gql-types.d';
-import { PrismaClient, UserRoles } from '@prisma/client';
-import { ApolloError } from 'apollo-server-core';
-import e from 'express';
+import { UserRoles } from '@prisma/client';
+
 export const resolvers = {
     Query: {
         users: async (_parent: any, args: any, context: IContext): Promise<User[]> => {
