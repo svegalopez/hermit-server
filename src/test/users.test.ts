@@ -84,7 +84,7 @@ describe("Users Service /users", () => {
 
         it('should get credentials', async () => {
             let res = await request(hermit.app).post("/api/users/login").send({
-                email: 'sebastianvega.dev@gmail.com',
+                email: 'admin1@test.com',
                 password: 'Rootroot1!'
             });
 

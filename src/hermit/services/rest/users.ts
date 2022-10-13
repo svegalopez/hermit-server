@@ -88,18 +88,22 @@ router.get('/well-known', async (req, res) => {
             user: {
                 select: {
                     id: true,
-                    email: true
+                    email: true,
+                    userRoles: true
                 }
             }
         }
     });
 
     if (!login) return res.status(404).send({ error: 'Credentials not found' })
-
     const token = sign({ id: login.user.id }, secret).split('.');
 
     return res.json({
-        user: login.user,
+        user: {
+            id: login.user.id,
+            email: login.user.email,
+            roles: login.user.userRoles.map(el => el.roleName)
+        },
         tp1: token[2],
         tp2: token[1],
         tp3: token[0]
