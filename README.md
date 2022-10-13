@@ -1,12 +1,18 @@
-# Hermit Server
+<p align="center">
+    <img height="180" src="./images/hermit.png">
+</p>
 
-## DB Schema
+<h1 align="center">Hermit Server</h1>
 
-The DB schema is defined in `src/prisma/schema.prisma`.
+<br>
+<br>
+<p align="center">
+    <img width="30" src="./images/ts.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img height="30" src="./images/prisma.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img width="30" src="./images/gql.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img width="30" src="./images/jest.svg">
+</p>
+<br>
+<br>
 
-## Available Services
-
-Listens on port 4000 and exposes:
-
-- a REST api under `/api`
-- a GQL graph under `/graphql`
+<p>Coming Soon... </p>
