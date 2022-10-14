@@ -13,7 +13,7 @@
     "start": "node dist/index.js",
     "release": "npx prisma migrate deploy --schema ./src/hermit/prisma/schema.prisma",
     "test": "npx tsc && jest --verbose",
-    "enforce": "npx nyc check-coverage --lines 90 -t ./src/test/coverage",
+    "enforce": "npx nyc check-coverage --lines 99 -t ./src/test/coverage",
     "seed": "npx tsc && node dist/hermit/prisma/seed/entry.js",
     "reset:staging": "dotenv -e ./src/hermit/prisma/.env.staging -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma",
     "reset:production": "dotenv -e ./src/hermit/prisma/.env.production -- prisma migrate reset --schema ./src/hermit/prisma/schema.prisma"

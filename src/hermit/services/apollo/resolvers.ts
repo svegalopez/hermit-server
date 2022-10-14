@@ -1,8 +1,9 @@
-import { AuthenticationError } from 'apollo-server-express';
+import { ApolloError, AuthenticationError } from 'apollo-server-express';
 import { hasRole } from './../../utils/hasRole';
 import { IContext } from './index';
-import { MutationCreateUserArgs, User } from './gql-types.d';
+import { MutationCreateUserArgs, User, MutationChangePasswordArgs } from './gql-types.d';
 import { UserRole } from '@prisma/client';
+import { compareSync, getHash } from '../../utils/passwordHash';
 
 export const resolvers = {
     Query: {
@@ -49,6 +50,28 @@ export const resolvers = {
                 ...user,
                 roles: []
             };
+        },
+        changePassword: async (_: any, args: MutationChangePasswordArgs, context: IContext): Promise<String> => {
+            if (args.new !== args.confirmNew) throw new ApolloError('Passwords do not match');
+
+            const user = await context.prisma.user.findUnique({
+                where: {
+                    id: context.user.id
+                },
+                select: {
+                    password: true
+                }
+            });
+
+            if (!user) throw new ApolloError('User not found');
+            if (!compareSync(args.current, user.password)) throw new ApolloError('Wrong password');
+
+            await context.prisma.user.update({
+                where: { id: context.user.id },
+                data: { password: getHash(args.new) }
+            });
+
+            return "OK";
         }
     }
 };
