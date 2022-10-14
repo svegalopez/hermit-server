@@ -63,6 +63,7 @@ export const resolvers = {
                 }
             });
 
+            /* istanbul ignore if */
             if (!user) throw new ApolloError('User not found');
             if (!compareSync(args.current, user.password)) throw new ApolloError('Wrong password');
 
