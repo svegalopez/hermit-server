@@ -299,6 +299,93 @@ describe("Users Service /users", () => {
         })
     });
 
+    describe("GQL Mutation.changePassword", () => {
+        let token = '';
+        let token2 = ''
+        beforeAll(async () => {
+            console.log('🍄 Reset... 🍄');
+            execSync(`npx dotenv -v DATABASE_URL=${process.env.DATABASE_URL} -- npx prisma migrate reset --force --skip-generate --schema ./src/hermit/prisma/schema.prisma`)
+
+            let { status, body } = await request(hermit.app).post("/api/users/login").send({
+                email: 'admin1@test.com',
+                password: 'Rootroot1!'
+            });
+            expect(status).toBe(200);
+            token = body.token;
+
+            let res = await request(hermit.app).post("/api/users/login").send({
+                email: 'sebastianvega.dev@gmail.com',
+                password: 'Rootroot1!'
+            });
+            expect(res.status).toBe(200);
+            token2 = res.body.token;
+        });
+
+        it("should change a user's password", async () => {
+            let query = `mutation ChangePassword($current: String!, $new: String!, $confirmNew: String!) {
+                changePassword(current: $current, new: $new, confirmNew: $confirmNew)
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .set('Authorization', token)
+                .send({
+                    query,
+                    variables: { current: 'Rootroot1!', new: 'Rootroot2!', confirmNew: 'Rootroot2!' },
+                });
+
+            expect(body.errors).toBe(undefined);
+
+            let res = await request(hermit.app).post("/api/users/login").send({
+                email: 'admin1@test.com',
+                password: 'Rootroot1!'
+            });
+
+            // Expect old pw to be wrong
+            expect(res.body).toEqual({
+                error: 'Incorrect Password. Your account will be blocked after 2 more failed attempts.'
+            });
+
+            res = await request(hermit.app).post("/api/users/login").send({
+                email: 'admin1@test.com',
+                password: 'Rootroot2!'
+            });
+
+            // Expect new pw to work
+            expect(res.status).toBe(200);
+            expect(res.body.user).toBeTruthy();
+        });
+
+        it("should error out when new passwords do not match", async () => {
+            let query = `mutation ChangePassword($current: String!, $new: String!, $confirmNew: String!) {
+                changePassword(current: $current, new: $new, confirmNew: $confirmNew)
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .set('Authorization', token2)
+                .send({
+                    query,
+                    variables: { current: 'Rootroot1!', new: 'Rootroot2!', confirmNew: '123456' },
+                });
+
+            expect(body.errors[0].message).toBe("Passwords do not match");
+        });
+
+        it("should error out when current password is wrong", async () => {
+            let query = `mutation ChangePassword($current: String!, $new: String!, $confirmNew: String!) {
+                changePassword(current: $current, new: $new, confirmNew: $confirmNew)
+            }`;
+            const { body } = await request(hermit.app)
+                .post("/graphql")
+                .set('Authorization', token2)
+                .send({
+                    query,
+                    variables: { current: '123456', new: 'Rootroot2!', confirmNew: 'Rootroot2!' },
+                });
+
+            expect(body.errors[0].message).toBe("Wrong password");
+        });
+    });
+
     describe("GQL Query.users", () => {
         let token = '';
         let nonAdminToken = '';

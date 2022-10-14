@@ -23,5 +23,6 @@ export const typeDefs = gql`
 
   type Mutation {
     createUser(user: UserInput!): User!
+    changePassword(current: String!, new: String!, confirmNew: String!): String!
   }
 `;
