@@ -32,7 +32,7 @@ When you run `npm test`, hermit uses ts-jest in order to run tests. A new enviro
 
 ## Ci-Cd
 
-Using Github Actions and Heroku pipelies, the workflow is the following:
+Using Github Actions and Heroku pipelines, the workflow is the following:
 
 - Commit to your feature branch
 - Open a PR from feature branch into main
