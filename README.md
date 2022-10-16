@@ -8,7 +8,7 @@
 <br>
 <p align="center">
     <img width="30" src="./images/ts.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <img height="30" src="./images/prisma.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img height="30" src="./images/prisma-blk.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img width="30" src="./images/gql.svg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img width="30" src="./images/jest.svg">
 </p>
