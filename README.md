@@ -38,7 +38,7 @@ Using Github Actions and Heroku pipelies, the workflow is the following:
 - Open a PR from feature branch into main
 - Automated tests will run in Github, and coverage 100% is enforced : )
 - Once a PR is merged to main, the code will auto deploy to [a staging environment](https://server-staging.hermit.cloud/)
-- Using the Heroky pipelines dashboard you can promote to production with a single click
+- Using the Heroku pipelines dashboard you can promote to production with a single click
 
 ## Debug
 
